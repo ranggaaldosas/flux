@@ -1,10 +1,10 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
-  name: go_sample_app
+  name: artamevia/go-sample-app
   namespace: flux-system
 spec:
-  image: artamevia/go_sample_app
+  image: artamevia/artamevia/go-sample-app
   interval: 30s
   secretRef:
     name: dockerhub-key
@@ -13,11 +13,11 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
-  name: go_sample_app
+  name: artamevia/go-sample-app
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: go_sample_app
+    name: artamevia/go-sample-app
   policy:
     semver:
       range: '>=0.0.1'
@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: go_sample_app-configs
+  name: artamevia/go-sample-app-configs
   namespace: playground-dfgjkt
 type: Opaque
 stringData:
@@ -38,39 +38,39 @@ stringData:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go_sample_app
+  name: artamevia/go-sample-app
   namespace: playground-dfgjkt
   labels:
-    app: go_sample_app
+    app: artamevia/go-sample-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: go_sample_app
+      app: artamevia/go-sample-app
   template:
     metadata:
       labels:
-        app: go_sample_app
+        app: artamevia/go-sample-app
     spec:
       imagePullSecrets:
         - name: dockerhub-key
       containers:
-        - name: go_sample_app
-          image: artamevia/go_sample_app:1.0.2
+        - name: artamevia/go-sample-app
+          image: artamevia/artamevia/go-sample-app:1.0.2
           ports:
             - containerPort: 3000
           envFrom:
             - secretRef:
-                name: "go_sample_app-configs"
+                name: "artamevia/go-sample-app-configs"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: go_sample_app
+  name: artamevia/go-sample-app
   namespace: playground-dfgjkt
   labels:
-    app: go_sample_app
+    app: artamevia/go-sample-app
 spec:
   type: ClusterIP
   ports:
@@ -79,13 +79,13 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: go_sample_app
+    app: artamevia/go-sample-app
 
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: go_sample_app
+  name: artamevia/go-sample-app
   namespace: playground-dfgjkt
 spec:
   rules:
@@ -96,7 +96,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: go_sample_app
+                name: artamevia/go-sample-app
                 port:
                   number: 80
   ingressClassName: traefik
