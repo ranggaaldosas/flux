@@ -1,10 +1,10 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
-  name: artamevia/go-sample-app
+  name: your-ip
   namespace: flux-system
 spec:
-  image: artamevia/artamevia/go-sample-app
+  image: artamevia/your_ip
   interval: 30s
   secretRef:
     name: dockerhub-key
@@ -13,11 +13,11 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
-  name: artamevia/go-sample-app
+  name: your-ip
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: artamevia/go-sample-app
+    name: your-ip
   policy:
     semver:
       range: '>=0.0.1'
@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: artamevia/go-sample-app-configs
+  name: your-ip-configs
   namespace: playground-dfgjkt
 type: Opaque
 stringData:
@@ -38,39 +38,39 @@ stringData:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: artamevia/go-sample-app
+  name: your-ip
   namespace: playground-dfgjkt
   labels:
-    app: artamevia/go-sample-app
+    app: your-ip
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: artamevia/go-sample-app
+      app: your-ip
   template:
     metadata:
       labels:
-        app: artamevia/go-sample-app
+        app: your-ip
     spec:
       imagePullSecrets:
         - name: dockerhub-key
       containers:
-        - name: artamevia/go-sample-app
-          image: artamevia/artamevia/go-sample-app:1.0.2
+        - name: your-ip
+          image: artamevia/your_ip:1.0.2
           ports:
             - containerPort: 3000
           envFrom:
             - secretRef:
-                name: "artamevia/go-sample-app-configs"
+                name: "your-ip-configs"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: artamevia/go-sample-app
+  name: your-ip
   namespace: playground-dfgjkt
   labels:
-    app: artamevia/go-sample-app
+    app: your-ip
 spec:
   type: ClusterIP
   ports:
@@ -79,13 +79,13 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: artamevia/go-sample-app
+    app: your-ip
 
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: artamevia/go-sample-app
+  name: your-ip
   namespace: playground-dfgjkt
 spec:
   rules:
@@ -96,7 +96,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: artamevia/go-sample-app
+                name: your-ip
                 port:
                   number: 80
   ingressClassName: traefik
