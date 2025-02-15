@@ -1,10 +1,10 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
-  name: your-ip
+  name: go-sample-app
   namespace: flux-system
 spec:
-  image: artamevia/your_ip
+  image: artamevia/go-sample-app
   interval: 30s
   secretRef:
     name: dockerhub-key
@@ -13,11 +13,11 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
-  name: your-ip
+  name: go-sample-app
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: your-ip
+    name: go-sample-app
   policy:
     semver:
       range: '>=0.0.1'
@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: your-ip-configs
+  name: go-sample-app-configs
   namespace: playground-dfgjkt
 type: Opaque
 stringData:
@@ -38,39 +38,39 @@ stringData:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: your-ip
+  name: go-sample-app
   namespace: playground-dfgjkt
   labels:
-    app: your-ip
+    app: go-sample-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: your-ip
+      app: go-sample-app
   template:
     metadata:
       labels:
-        app: your-ip
+        app: go-sample-app
     spec:
       imagePullSecrets:
         - name: dockerhub-key
       containers:
-        - name: your-ip
-          image: artamevia/your_ip:1.0.2
+        - name: go-sample-app
+          image: artamevia/go-sample-app:1.0.2
           ports:
             - containerPort: 3000
           envFrom:
             - secretRef:
-                name: "your-ip-configs"
+                name: "go-sample-app-configs"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: your-ip
+  name: go-sample-app
   namespace: playground-dfgjkt
   labels:
-    app: your-ip
+    app: go-sample-app
 spec:
   type: ClusterIP
   ports:
@@ -79,13 +79,13 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: your-ip
+    app: go-sample-app
 
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: your-ip
+  name: go-sample-app
   namespace: playground-dfgjkt
 spec:
   rules:
@@ -96,7 +96,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: your-ip
+                name: go-sample-app
                 port:
                   number: 80
   ingressClassName: traefik
